@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as UUID;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -88,6 +90,16 @@ class Users implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $passwordTokenExpiration;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Favorites", mappedBy="user", orphanRemoval=true)
+     */
+    private $favorites;
+
+    public function __construct()
+    {
+        $this->favorites = new ArrayCollection();
+    }
 
     public function getId(): ?Uuid
     {
@@ -286,6 +298,37 @@ class Users implements UserInterface
     public function setPasswordTokenExpiration(?\DateTimeInterface $passwordTokenExpiration): self
     {
         $this->passwordTokenExpiration = $passwordTokenExpiration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favorites[]
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorites $favorite): self
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites[] = $favorite;
+            $favorite->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorites $favorite): self
+    {
+        if ($this->favorites->contains($favorite)) {
+            $this->favorites->removeElement($favorite);
+            // set the owning side to null (unless already changed)
+            if ($favorite->getUser() === $this) {
+                $favorite->setUser(null);
+            }
+        }
 
         return $this;
     }
