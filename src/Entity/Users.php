@@ -96,9 +96,37 @@ class Users implements UserInterface
      */
     private $favorites;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Offers", mappedBy="user")
+     */
+    private $offers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Media", mappedBy="user")
+     */
+    private $media;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Media", inversedBy="users")
+     */
+    private $picture;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Addresses", inversedBy="users")
+     */
+    private $adress;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ads", mappedBy="createdBy")
+     */
+    private $ads;
+
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
+        $this->offers = new ArrayCollection();
+        $this->media = new ArrayCollection();
+        $this->ads = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -327,6 +355,123 @@ class Users implements UserInterface
             // set the owning side to null (unless already changed)
             if ($favorite->getUser() === $this) {
                 $favorite->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Offers[]
+     */
+    public function getOffers(): Collection
+    {
+        return $this->offers;
+    }
+
+    public function addOffer(Offers $offer): self
+    {
+        if (!$this->offers->contains($offer)) {
+            $this->offers[] = $offer;
+            $offer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offers $offer): self
+    {
+        if ($this->offers->contains($offer)) {
+            $this->offers->removeElement($offer);
+            // set the owning side to null (unless already changed)
+            if ($offer->getUser() === $this) {
+                $offer->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Media[]
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): self
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media[] = $medium;
+            $medium->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): self
+    {
+        if ($this->media->contains($medium)) {
+            $this->media->removeElement($medium);
+            // set the owning side to null (unless already changed)
+            if ($medium->getUser() === $this) {
+                $medium->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPicture(): ?Media
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?Media $picture): self
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function getAdress(): ?Addresses
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(?Addresses $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ads[]
+     */
+    public function getAds(): Collection
+    {
+        return $this->ads;
+    }
+
+    public function addAd(Ads $ad): self
+    {
+        if (!$this->ads->contains($ad)) {
+            $this->ads[] = $ad;
+            $ad->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAd(Ads $ad): self
+    {
+        if ($this->ads->contains($ad)) {
+            $this->ads->removeElement($ad);
+            // set the owning side to null (unless already changed)
+            if ($ad->getCreatedBy() === $this) {
+                $ad->setCreatedBy(null);
             }
         }
 

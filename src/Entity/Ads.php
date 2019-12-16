@@ -63,9 +63,36 @@ class Ads
      */
     private $favorites;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Offers", mappedBy="ad")
+     */
+    private $offers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Attachements", mappedBy="ad")
+     */
+    private $attachements;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="ads")
+     */
+    private $createdBy;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categories", inversedBy="ads")
+     */
+    private $category;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Addresses", inversedBy="ads")
+     */
+    private $location;
+
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
+        $this->offers = new ArrayCollection();
+        $this->attachements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,6 +223,104 @@ class Ads
                 $favorite->setAd(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Offers[]
+     */
+    public function getOffers(): Collection
+    {
+        return $this->offers;
+    }
+
+    public function addOffer(Offers $offer): self
+    {
+        if (!$this->offers->contains($offer)) {
+            $this->offers[] = $offer;
+            $offer->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offers $offer): self
+    {
+        if ($this->offers->contains($offer)) {
+            $this->offers->removeElement($offer);
+            // set the owning side to null (unless already changed)
+            if ($offer->getAd() === $this) {
+                $offer->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Attachements[]
+     */
+    public function getAttachements(): Collection
+    {
+        return $this->attachements;
+    }
+
+    public function addAttachement(Attachements $attachement): self
+    {
+        if (!$this->attachements->contains($attachement)) {
+            $this->attachements[] = $attachement;
+            $attachement->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttachement(Attachements $attachement): self
+    {
+        if ($this->attachements->contains($attachement)) {
+            $this->attachements->removeElement($attachement);
+            // set the owning side to null (unless already changed)
+            if ($attachement->getAd() === $this) {
+                $attachement->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?Users
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?Users $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Categories
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Categories $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Addresses
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Addresses $location): self
+    {
+        $this->location = $location;
 
         return $this;
     }
