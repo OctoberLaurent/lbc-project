@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Users;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -78,7 +79,7 @@ class RegisterType extends AbstractType
             /* Nom */
             ->add('lastname', TextType::class, [
                 'label' => "Nom",
-                'attr' => ['class' => 'form-control' ],
+                'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
@@ -88,10 +89,13 @@ class RegisterType extends AbstractType
             ])
 
         ->add('phone', TextType::class, [
-            'attr' => ['class' => 'form-control']])
+            'attr' => ['class' => 'form-control']
+            ])
 
         ->add('birthday', DateType::class, [
-            'attr' => ['class' => 'form-control']]);
+            'years' => $this->years(),
+            'attr' => ['class' => 'form-control']
+            ]);
 }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -100,4 +104,16 @@ class RegisterType extends AbstractType
             'data_class' => Users::class,
         ]);
     }
+
+    private function years() :array
+    {
+        $years = [];
+        for ($y=1900;$y<2017;$y++){
+
+            $years[] = strval($y);
+        }
+
+        return $years;
+    }
+
 }
