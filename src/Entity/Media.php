@@ -19,7 +19,7 @@ class Media
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", columnDefinition="enum('image','video','sound')")
      */
     private $type;
 

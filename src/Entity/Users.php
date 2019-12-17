@@ -92,11 +92,6 @@ class Users implements UserInterface
     private $passwordTokenExpiration;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Favorites", mappedBy="user", orphanRemoval=true)
-     */
-    private $favorites;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Offers", mappedBy="user")
      */
     private $offers;
@@ -121,12 +116,18 @@ class Users implements UserInterface
      */
     private $ads;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Ads", inversedBy="users")
+     * @ORM\JoinTable(name="favorites")
+     */
+    private $favorites;
+
     public function __construct()
     {
-        $this->favorites = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->ads = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -236,7 +237,10 @@ class Users implements UserInterface
         return $this->screenname;
     }
 
-    public function setScreenname(string $screenname): self
+    /**
+     * @ORM\PrePersist
+     */
+    public function setScreenname(): self
     {
         $this->screenname = $this->firstname;
         $this->screenname .= " ";
@@ -326,37 +330,6 @@ class Users implements UserInterface
     public function setPasswordTokenExpiration(?\DateTimeInterface $passwordTokenExpiration): self
     {
         $this->passwordTokenExpiration = $passwordTokenExpiration;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Favorites[]
-     */
-    public function getFavorites(): Collection
-    {
-        return $this->favorites;
-    }
-
-    public function addFavorite(Favorites $favorite): self
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites[] = $favorite;
-            $favorite->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorites $favorite): self
-    {
-        if ($this->favorites->contains($favorite)) {
-            $this->favorites->removeElement($favorite);
-            // set the owning side to null (unless already changed)
-            if ($favorite->getUser() === $this) {
-                $favorite->setUser(null);
-            }
-        }
 
         return $this;
     }
@@ -473,6 +446,32 @@ class Users implements UserInterface
             if ($ad->getCreatedBy() === $this) {
                 $ad->setCreatedBy(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ads[]
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Ads $favorite): self
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites[] = $favorite;
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Ads $favorite): self
+    {
+        if ($this->favorites->contains($favorite)) {
+            $this->favorites->removeElement($favorite);
         }
 
         return $this;

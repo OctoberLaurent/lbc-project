@@ -48,7 +48,7 @@ class Ads
     private $langage;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", columnDefinition="enum('new','used','broken')") 
      */
     private $state;
 
@@ -61,11 +61,6 @@ class Ads
      * @ORM\Column(type="datetime")
      */
     private $date_expire;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Favorites", mappedBy="ad")
-     */
-    private $favorites;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Offers", mappedBy="ad")
@@ -88,18 +83,25 @@ class Ads
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Addresses", inversedBy="ads")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Addresses", inversedBy="ads", cascade={"persist"})
      */
     private $location;
 
+    // /**
+    //  * @ORM\ManyToMany(targetEntity="App\Entity\Users", mappedBy="favorites")
+    //  */
+    // private $users;
+
     public function __construct()
     {
-        $this->favorites = new ArrayCollection();
+        $this->datePublish = new \DateTime();
+        $this->dateExpire = $this->datePublish->add(new \DateInterval('P15D'));
         $this->offers = new ArrayCollection();
         $this->attachements = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?uuid
     {
         return $this->id;
     }
@@ -201,37 +203,6 @@ class Ads
     }
 
     /**
-     * @return Collection|Favorites[]
-     */
-    public function getFavorites(): Collection
-    {
-        return $this->favorites;
-    }
-
-    public function addFavorite(Favorites $favorite): self
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites[] = $favorite;
-            $favorite->setAd($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorites $favorite): self
-    {
-        if ($this->favorites->contains($favorite)) {
-            $this->favorites->removeElement($favorite);
-            // set the owning side to null (unless already changed)
-            if ($favorite->getAd() === $this) {
-                $favorite->setAd(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Offers[]
      */
     public function getOffers(): Collection
@@ -325,6 +296,34 @@ class Ads
     public function setLocation(?Addresses $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Users[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(Users $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addFavorite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(Users $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removeFavorite($this);
+        }
 
         return $this;
     }
