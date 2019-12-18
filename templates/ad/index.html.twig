@@ -1,10 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AdController!{% endblock %}
+{% block title %}Ads list{% endblock %}
 
 {% block body %}
 
-
-<div class="example-wrapper">
-    <h1>Hello✅</h1>
+<div class="container">
+        <h1>Ads</h1>
+        {% for ad in ads %}
+        
+        <div class="row m-1 p-3 bg-light">
+            <div class="col-4">
+            <img src="http://placekitten.com/200/200" alt="">
+            </div>
+            <div class="col-8 pl-5">
+            <a href="" class = "float-right"><i class="far fa-heart"></i></a>
+            <a href=""><h2>{{ ad.title }}</h2></a>
+            <strong>{{ ad.Category.name }}</strong>
+            <p>{{ ad.description }}</p>
+            <br>
+            <p>{{ ad.price }} €</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}
