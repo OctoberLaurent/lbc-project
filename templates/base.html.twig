@@ -15,15 +15,24 @@
 
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('home') }}">Home <span class="sr-only">(current)</span></a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('home') }}">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('ads') }}">Ads</a>
                         </li>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            <a class="nav-link" href="{{ path('create_ad') }}">Create Ad</a>
                         </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li><a href="{{ path('app_logout') }}">Log out</a></li>
+                        {% else %}
+                        <li><a href="{{ path('app_login') }}"> Login</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </nav>
