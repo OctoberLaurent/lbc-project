@@ -107,8 +107,9 @@ class RegisterType extends AbstractType
 
     private function years() :array
     {
+        $now = date('Y');
         $years = [];
-        for ($y=1900;$y<2017;$y++){
+        for ($y=$now-99;$y<($now-13);$y++){
 
             $years[] = strval($y);
         }

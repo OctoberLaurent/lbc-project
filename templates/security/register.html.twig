@@ -6,6 +6,8 @@
 
 <div class="container">
 
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
         {{ form_label(form.firstname) }}
         {{ form_widget(form.firstname) }}
         {{ form_errors(form.firstname) }}
@@ -41,13 +43,15 @@
 
         {{ form_errors(form.password) }}
         {{ form_help(form.password) }}
-    </div>
+
     {# <div class="form-group">
         {{ form_label(form.agreeTerms) }}
         {{ form_widget(form.agreeTerms) }}
         {{ form_errors(form.agreeTerms) }}
         {{ form_help(form.agreeTerms) }}
     </div> #}
+
+    <button type="submit" class="btn btn-success">Validation</button>
     {{ form_end(form) }}
     
 
