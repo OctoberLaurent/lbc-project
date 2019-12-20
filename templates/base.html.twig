@@ -26,7 +26,18 @@
                             <a class="nav-link" href="{{ path('create_ad') }}">Create Ad</a>
                         </li>
                         {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Categories
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            {% for category in Categories() %}
+                                 <a class="dropdown-item" href="{{ path('ads', {'categ': category.slug}) }}">{{ category.name }}</a>
+                            {% endfor %}
+                            </div>
+                        </li>
                     </ul>
+
                     <ul class="nav navbar-nav navbar-right">
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li><a href="{{ path('app_logout') }}">Log out</a></li>

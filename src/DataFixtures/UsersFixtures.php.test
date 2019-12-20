@@ -1,0 +1,59 @@
+<?php
+
+namespace App\DataFixtures;
+
+use Faker\Factory;
+use App\Entity\Media;
+use App\Entity\Users;
+use App\Entity\Attachements;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
+class UsersFixtures extends Fixture
+{
+
+    private $encoder; 
+
+        public function __construct(UserPasswordEncoderInterface $encoder)
+        {
+            $this->encoder = $encoder;
+        }
+
+    public function load(ObjectManager $manager)
+
+    {
+
+        // generate a random genre
+        $arrayGender = [
+            "male",
+            "female"
+        ];
+        $user = new Users();
+        for ($i=1;$i<10;$i++){
+        $gender = $arrayGender[mt_rand(0, count($arrayGender) - 1)];
+
+        $faker = Factory::create('fr_FR');
+        
+        //$contents = file_get_contents('https://randomuser.me/api/?gender='.$gender);
+        //$json = json_decode($contents);
+        //$url = $json->results[0]->picture->medium;
+        $user->setFirstName($faker->firstName($gender));
+        $user->setLastName($faker->lastName);
+        $user->setEmail($faker->email);
+        $user->setRoles(['ROLE__USER']);
+        $user->setPassword($this->encoder->encodePassword($user, 'test'));
+        $user->setPhone($faker->phoneNumber);
+        $user->setBirthday($faker->dateTimeInInterval($startDate = '-30 years', $interval = '- years', $timezone = null));
+        $user->setLangage('fr');
+        $user->setIsActive(true);
+        //$user->setPicture($url);
+
+        $manager->persist($user);
+
+        }
+        
+        $manager->flush();
+    }
+
+}

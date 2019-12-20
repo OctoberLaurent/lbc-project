@@ -3,10 +3,22 @@
 {% block title %}Hello AdController!{% endblock %}
 
 {% block body %}
+
 <div class="container">
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Ads</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Where ?</a>
+        </div>
+    </nav>
+        <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-        <div class="form-group">
+    <div class="form-group">
             {{ form_label(form.title) }} 
             <br> 
             {{ form_widget(form.title) }}
@@ -36,8 +48,23 @@
             {{ form_errors(form.state) }}
             {{ form_help(form.state) }}
         </div>
-    {{ form_widget(form) }}
-    <button type="submit" class="btn btn-success">Validation</button>
-    {{ form_end(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category) }}
+            {{ form_errors(form.category) }}
+            {{ form_help(form.category) }}
+        </div>
+    </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            
+            
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+            <br>
+            <button type="submit" class="btn btn-success">Validation</button>
+        </div>
 </div>
+
+    
 {% endblock %}
